@@ -76,8 +76,10 @@ def main(_):
 
     with tf.Session() as sess:
         model = DMN(FLAGS, words)
-        sess.run(tf.initialize_all_variables())
+        print('session running')
 
+        sess.run(tf.initialize_all_variables())
+        
         if FLAGS.test:
             model.load(sess)
             model.eval(sess, test, name='Test')
