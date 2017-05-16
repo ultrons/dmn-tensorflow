@@ -18,8 +18,9 @@ class vgg16:
     def __init__(self, imgs, weights=None, sess=None):
         self.imgs = imgs
         self.convlayers()
-        self.fc_layers()
-        self.probs = tf.nn.softmax(self.fc3l)
+        layer = self.fc_layers()
+        #self.probs = tf.nn.softmax(self.fc3l)
+        self.probs = layer
         if weights is not None and sess is not None:
             self.load_weights(weights, sess)
 
@@ -244,6 +245,7 @@ class vgg16:
                                  trainable=True, name='biases')
             self.fc3l = tf.nn.bias_add(tf.matmul(self.fc2, fc3w), fc3b)
             self.parameters += [fc3w, fc3b]
+        return self.fc2
 
     def load_weights(self, weight_file, sess):
         weights = np.load(weight_file)
@@ -260,7 +262,10 @@ if __name__ == '__main__':
     img1 = imread('laska.png', mode='RGB')
     img1 = imresize(img1, (224, 224))
 
-    prob = sess.run(vgg.probs, feed_dict={vgg.imgs: [img1]})[0]
-    preds = (np.argsort(prob)[::-1])[0:5]
-    for p in preds:
-        print (class_names[p], prob[p])
+    requiredLayer = sess.run(vgg.probs, feed_dict={vgg.imgs: [img1]})
+    print(requiredLayer.shape)
+    
+    #prob = x[0]
+    #preds = (np.argsort(prob)[::-1])[0:5]
+    #for p in preds:
+    #    print (class_names[p], prob[p])
